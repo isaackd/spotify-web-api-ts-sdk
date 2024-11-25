@@ -11,14 +11,24 @@ import IAuthStrategy from "./IAuthStrategy.js";
  * @param {string} accessToken - The access token returned from a client side Authorization Code with PKCE flow.
  */
 export default class ProvidedAccessTokenStrategy implements IAuthStrategy {
-    private refreshTokenAction: (clientId: string, token: AccessToken) => Promise<AccessToken>;
+    private refreshTokenAction: (
+        clientId: string,
+        token: AccessToken,
+        clientSecret?: string
+    ) => Promise<AccessToken>;
 
     constructor(
         protected clientId: string,
         protected accessToken: AccessToken,
-        refreshTokenAction?: (clientId: string, token: AccessToken) => Promise<AccessToken>
+        protected clientSecret?: string,
+        refreshTokenAction?: (
+            clientId: string,
+            token: AccessToken,
+            clientSecret?: string
+        ) => Promise<AccessToken>
     ) {
-        this.refreshTokenAction = refreshTokenAction || AccessTokenHelpers.refreshCachedAccessToken;
+        this.refreshTokenAction =
+            refreshTokenAction || AccessTokenHelpers.refreshCachedAccessToken;
 
         // If the raw token from the jwt response is provided here
         // Calculate an absolute `expiry` value.
@@ -28,16 +38,24 @@ export default class ProvidedAccessTokenStrategy implements IAuthStrategy {
         // issuing and passing here.
 
         if (!this.accessToken.expires) {
-            this.accessToken.expires = AccessTokenHelpers.calculateExpiry(this.accessToken);
+            this.accessToken.expires = AccessTokenHelpers.calculateExpiry(
+                this.accessToken
+            );
         }
     }
 
-    public setConfiguration(_: SdkConfiguration): void {
-    }
+    public setConfiguration(_: SdkConfiguration): void {}
 
     public async getOrCreateAccessToken(): Promise<AccessToken> {
-        if (this.accessToken.expires && this.accessToken.expires <= Date.now()) {
-            const refreshed = await this.refreshTokenAction(this.clientId, this.accessToken);
+        if (
+            this.accessToken.expires &&
+            this.accessToken.expires <= Date.now()
+        ) {
+            const refreshed = await this.refreshTokenAction(
+                this.clientId,
+                this.accessToken,
+                this.clientSecret
+            );
             this.accessToken = refreshed;
         }
 
@@ -54,7 +72,7 @@ export default class ProvidedAccessTokenStrategy implements IAuthStrategy {
             token_type: "",
             expires_in: 0,
             refresh_token: "",
-            expires: 0
+            expires: 0,
         };
     }
 }
