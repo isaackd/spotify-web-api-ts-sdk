@@ -132,10 +132,10 @@ export class SpotifyApi {
         return { ...defaultConfig, ...config };
     }
 
-    public switchAuthenticationStrategy(authentication: IAuthStrategy) {
+    public async switchAuthenticationStrategy(authentication: IAuthStrategy) {
         this.authenticationStrategy = authentication;
         this.authenticationStrategy.setConfiguration(this.sdkConfig);
-        this.authenticationStrategy.getOrCreateAccessToken(); // trigger any redirects 
+        await this.authenticationStrategy.getOrCreateAccessToken(); // trigger any redirects
     }
 
     /**
