@@ -14,9 +14,11 @@ import DefaultResponseValidator from "./responsevalidation/DefaultResponseValida
 import DefaultResponseDeserializer from "./serialization/DefaultResponseDeserializer.js";
 import { Scopes } from "./Scopes.js";
 import { emptyAccessToken } from "./auth/IAuthStrategy.js";
+import AccessTokenHelpers from "./auth/AccessTokenHelpers.js";
 
 export {
     SpotifyApi,
+    AccessTokenHelpers,
     AuthorizationCodeWithPKCEStrategy,
     ClientCredentialsStrategy,
     ProvidedAccessTokenStrategy,
@@ -29,12 +31,9 @@ export {
     DefaultResponseValidator,
     DefaultResponseDeserializer,
     Scopes,
-    emptyAccessToken
-}
+    emptyAccessToken,
+};
 
 export type * from "./types.js";
 
-export type {
-    IAuthStrategy,
-    ICacheStore,
-}
+export type { IAuthStrategy, ICacheStore };
